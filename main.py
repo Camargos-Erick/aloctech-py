@@ -55,7 +55,7 @@ class ClienteScreen():
         HomeScreen.telefone.place(x= 220, y=260, in_=HomeScreen.window1.cadastroCliente)
 
         #Botões para controle de input
-        agendarButtom = customtkinter.CTkButton(HomeScreen.window1.cadastroCliente, text="Cadastrar",font= customtkinter.CTkFont("Oswald", 18))
+        agendarButtom = customtkinter.CTkButton(HomeScreen.window1.cadastroCliente, text="Cadastrar",command= HomeScreen.collectDataA3,font= customtkinter.CTkFont("Oswald", 18))
         agendarButtom.place(x= 20, y=330, in_=HomeScreen.window1.cadastroCliente)
 
         closeButtom =  customtkinter.CTkButton(HomeScreen.window1.cadastroCliente, text="Fechar", command= HomeScreen.closeClientCadastro, font= customtkinter.CTkFont("Oswald", 18))
@@ -88,8 +88,19 @@ class ClienteScreen():
         HomeScreen.window1.showClientData.destroy()
         HomeScreen.window1.cadastroCliente.destroy()
 
+    def collectDataA3():
+        collectName = HomeScreen.nome.get()
+        collectId = HomeScreen.identificacao.get()
+        collectCargo = HomeScreen.cargo.get()
+        collectEmail = HomeScreen.email.get()
+        collectTelefone = HomeScreen.telefone.get()
 
-
+        if True == reservas.consult("id_client", "client", collectId):
+            reservas.armazenar((f"INSERT INTO client(name, id_client, cel, email, cargo) VALUES('{collectName}', '{collectId}', '{collectTelefone}', '{collectEmail}', '{collectCargo}')"))
+            CTkMessagebox(message="Cadastro realizado com sucesso.", icon="check", option_1="Ok")
+            HomeScreen.showClient()
+        else:
+            CTkMessagebox(title="Info", message="Existe um cliente com essa identificação !")
 
 
 class ReservasScreen():
