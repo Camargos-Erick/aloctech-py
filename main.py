@@ -7,9 +7,95 @@ from CTkTable import *
 import reservas
 from CTkMessagebox import CTkMessagebox
 
+class ClienteScreen():
+    nome= ""
+    identificacao=""
+    cargo=""
+    email=""
+    telefone=""
+    def clienteCadastro():
+        #Criação do frame
+        HomeScreen.window1.cadastroCliente =  customtkinter.CTkFrame(HomeScreen.window1, width= 400, height=450)
+        HomeScreen.window1.cadastroCliente.place(x= 25, y=50, in_=HomeScreen.window1)
+
+        #Criação do label text
+        title=  customtkinter.CTkLabel(HomeScreen.window1.cadastroCliente, text="Cadastro de cliente", font= customtkinter.CTkFont(family="Oswald", size=25, weight="bold"))
+        title.place(x=20, y=10, in_=HomeScreen.window1.cadastroCliente)
+
+        nomeText = customtkinter.CTkLabel(HomeScreen.window1.cadastroCliente, text="Nome do cliente:", font= customtkinter.CTkFont(family="Oswald", size= 18))
+        nomeText.place(x= 20, y=65, in_=HomeScreen.window1.cadastroCliente)
+
+        idText = customtkinter.CTkLabel(HomeScreen.window1.cadastroCliente, text="ID do cliente:", font= customtkinter.CTkFont(family="Oswald",size= 18))
+        idText.place(x= 20, y= 110, in_=HomeScreen.window1.cadastroCliente)
+
+        cargoText= customtkinter.CTkLabel(HomeScreen.window1.cadastroCliente, text="Cargo:", font= customtkinter.CTkFont(family="Oswald",size= 18))
+        cargoText.place(x= 20, y= 160, in_=HomeScreen.window1.cadastroCliente)
+
+        emailText = customtkinter.CTkLabel(HomeScreen.window1.cadastroCliente, text="Email:", font= customtkinter.CTkFont(family="Oswald",size= 18))
+        emailText.place(x= 20, y=210, in_=HomeScreen.window1.cadastroCliente)
+
+        telefoneText = customtkinter.CTkLabel(HomeScreen.window1.cadastroCliente, text="telefone:", font= customtkinter.CTkFont(family="Oswald",size= 18))
+        telefoneText.place(x= 20, y=260, in_=HomeScreen.window1.cadastroCliente)
+
+
+        #Criação de entrada de dados 
+        HomeScreen.nome= customtkinter.CTkEntry(HomeScreen.window1.cadastroCliente,  font= customtkinter.CTkFont("Oswald", 18))
+        HomeScreen.nome.place(x= 220, y=65, in_=HomeScreen.window1.cadastroCliente)
+        
+        HomeScreen.identificacao = customtkinter.CTkEntry(HomeScreen.window1.cadastroCliente,  font= customtkinter.CTkFont("Oswald", 18))
+        HomeScreen.identificacao.place(x= 220, y=110, in_=HomeScreen.window1.cadastroCliente)
+        
+        HomeScreen.cargo = customtkinter.CTkEntry(HomeScreen.window1.cadastroCliente,  font= customtkinter.CTkFont("Oswald", 18))
+        HomeScreen.cargo.place(x= 220, y=160, in_=HomeScreen.window1.cadastroCliente)
+
+        HomeScreen.email = customtkinter.CTkEntry(HomeScreen.window1.cadastroCliente,  font= customtkinter.CTkFont("Oswald", 18))
+        HomeScreen.email.place(x= 220, y=210, in_=HomeScreen.window1.cadastroCliente)
+
+        HomeScreen.telefone = customtkinter.CTkEntry(HomeScreen.window1.cadastroCliente,  font= customtkinter.CTkFont("Oswald", 18))
+        HomeScreen.telefone.place(x= 220, y=260, in_=HomeScreen.window1.cadastroCliente)
+
+        #Botões para controle de input
+        agendarButtom = customtkinter.CTkButton(HomeScreen.window1.cadastroCliente, text="Cadastrar",font= customtkinter.CTkFont("Oswald", 18))
+        agendarButtom.place(x= 20, y=330, in_=HomeScreen.window1.cadastroCliente)
+
+        closeButtom =  customtkinter.CTkButton(HomeScreen.window1.cadastroCliente, text="Fechar", command= HomeScreen.closeClientCadastro, font= customtkinter.CTkFont("Oswald", 18))
+        closeButtom.place(x=20, y=380, in_=HomeScreen.window1.cadastroCliente)
+
+
+        atualizarButtom= customtkinter.CTkButton(HomeScreen.window1.cadastroCliente, text="Atualizar", command= HomeScreen.showClient, font=customtkinter.CTkFont("Oswald", 18))
+        atualizarButtom.place(x=220, y= 330, in_=HomeScreen.window1.cadastroCliente)
+        
+        HomeScreen.showClient()
+
+    def showClient():
+        try:
+            HomeScreen.window1.showClientData.destroy()
+        except:
+            True
+        HomeScreen.window1.showClientData = customtkinter.CTkScrollableFrame(HomeScreen.window1, width=1000, height=810)
+        HomeScreen.window1.showClientData.place(x= 500, y=50, in_=HomeScreen.window1)
+
+        titleRoom= customtkinter.CTkLabel(HomeScreen.window1.showClientData, text="Clientes", font= customtkinter.CTkFont(family="arial", size=25))
+        titleRoom.place(x=20, y=10, in_=HomeScreen.window1.showClientData)
+
+        HomeScreen.matriz = reservas.readAll("SELECT * FROM client")
+        HomeScreen.matriz.insert(0, ["Nome", "ID cliente", "Telefone", "E-mail", "Cargo"])
+
+        table = CTkTable(master=HomeScreen.window1.showClientData, row=len(HomeScreen.matriz), column=5, values=HomeScreen.matriz)
+        table.pack(expand=True, fill="both", padx=20, pady=50)
+    
+    def closeClientCadastro():
+        HomeScreen.window1.showClientData.destroy()
+        HomeScreen.window1.cadastroCliente.destroy()
+
+
+
+
+
 class ReservasScreen():
     client=""
     calendar=""
+    room=""
     periodo=""
     def reservasMenu():
         #Criação do frame
@@ -200,7 +286,7 @@ class RoomScreen():
 
 
 
-class HomeScreen(ReservasScreen, RoomScreen):
+class HomeScreen(ReservasScreen, RoomScreen, ClienteScreen):
     window=""
     window1=""
     matriz= []
@@ -268,6 +354,10 @@ class HomeScreen(ReservasScreen, RoomScreen):
             salasBt= menu.add_cascade("Salas", font= customtkinter.CTkFont(family="arial", size=20))
             salasBt = CustomDropdownMenu(widget= salasBt, font= customtkinter.CTkFont(family="arial", size=15))
             salasBt.add_option(option="Cadastrar", command=HomeScreen.cadastrarSalas, font = customtkinter.CTkFont(family="arial", size= 15))
+
+            clientesBt =  menu.add_cascade("Clientes", font= customtkinter.CTkFont(family="arial", size=20))
+            clientesBt = CustomDropdownMenu(widget= clientesBt, font= customtkinter.CTkFont(family="arial", size= 15))
+            clientesBt.add_option(option="Cadastrar", command= HomeScreen.clienteCadastro , font = customtkinter.CTkFont(family="arial", size= 15))
 
             HomeScreen.window1.mainloop()
         
